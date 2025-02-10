@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:sw_teste/routes/delegate/delegate.dart';
 import 'package:sw_teste/services/setup_locator.dart';
-import 'package:sw_teste/view_model/login.dart';
-import 'package:sw_teste/view_model/orders.dart';
-import 'package:sw_teste/views/login/login_view.dart';
-import 'package:sw_teste/views/orders_view.dart';
 
 void main() {
   setupLocator();
@@ -16,17 +12,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Sw test',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ChangeNotifierProvider(
-        create: (_) => LoginController(),
-        child: LoginPage(),
-      ),
+      routerConfig: MyGoRouterDelegate().router,
     );
   }
 }

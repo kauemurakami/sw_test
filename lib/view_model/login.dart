@@ -21,9 +21,16 @@ class LoginController with ChangeNotifier {
     load.value = true;
     notifyListeners();
     Either<AppError, Auth> result = await repository.login(auth.value);
-    result.fold((error) {}, (Auth auth) async {
+    result.fold((error) {
+      //TODO: qualquer outro tratamento aqui
+    }, (Auth auth) async {
       await authService.value.saveTokens(auth);
       Either<AppError, User> r = await repository.fetchUser();
+      r.fold((e) {
+        //TODO: qualquer outro tratamento aqui
+      }, (User user) {
+        authService.value.user.value = user;
+      });
     });
     load.value = false;
     notifyListeners();

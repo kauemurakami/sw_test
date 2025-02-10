@@ -5,6 +5,7 @@ import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
+import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/models/user.dart';
 import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
@@ -17,11 +18,9 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/users/me'),
         headers: {
-          // "Content-Type": ContentTypes.json.type,
-          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}"
+          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
       );
-      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(User.fromJson(json.decode(response.body)));
       }
@@ -48,7 +47,6 @@ class ApiService {
         },
         body: auth.toJson(),
       );
-      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(Auth.fromJson(json.decode(response.body)));
       } else {
@@ -65,9 +63,32 @@ class ApiService {
     return Either.left(AppError(error: 's', errorDescription: ''));
   }
 
-  fetchOrders() async {
+  Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = false}) async {
     //GET
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    print(Uri.parse('$baseUrl/orders?includeFinished=$isFinished'));
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/orders?includeFinished=$isFinished'),
+        headers: {
+          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Either.right(orderFromJson(response.body));
+      }
+      if (response.statusCode == 403 || response.statusCode == 401) {
+        print('token expirado');
+      }
+      return Either.left(AppError.fromJson(json.decode(response.body)));
+    } catch (e) {
+      return Either.left(AppError(
+          error: 'Erro inesperado.',
+          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
+    }
   }
+
   addOrder() async {
     //POST
   }

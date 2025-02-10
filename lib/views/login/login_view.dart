@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sw_teste/constants/colors.dart';
 import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
-import 'package:sw_teste/view_model/login.dart';
+import 'package:sw_teste/routes/delegate/delegate_imports.dart';
 import 'package:sw_teste/widgets/default_button.dart';
 import 'package:sw_teste/widgets/tff.dart';
 
@@ -49,7 +47,6 @@ class LoginPage extends StatelessWidget {
                           onValidate: (String value) => controller.validatePassword(value),
                         ),
                         DefaultButton(
-
                           callback: () async {
                             if (_formKey.currentState!.validate()) {
                               final Either<AppError, Auth> result = await controller.login();
@@ -60,7 +57,7 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 );
                               }, (Auth auth) {
-                                print('auth success');
+                                context.goNamed(AppRoutes.orders);
                               });
                             }
                           },
