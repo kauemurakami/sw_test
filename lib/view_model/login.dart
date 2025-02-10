@@ -3,6 +3,7 @@ import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
+import 'package:sw_teste/models/user.dart';
 import 'package:sw_teste/repository/login_repository.dart';
 import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
@@ -21,7 +22,8 @@ class LoginController with ChangeNotifier {
     notifyListeners();
     Either<AppError, Auth> result = await repository.login(auth.value);
     result.fold((error) {}, (Auth auth) async {
-      await authService.value.saveTokens(auth.accessToken!, auth.refreshToken!);
+      await authService.value.saveTokens(auth);
+      Either<AppError, User> r = await repository.fetchUser();
     });
     load.value = false;
     notifyListeners();
