@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sw_teste/models/auth.dart';
+import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/repository/login_repository.dart';
@@ -8,12 +9,22 @@ import 'package:sw_teste/services/setup_locator.dart';
 
 class LoginController with ChangeNotifier {
   final LoginRepository repository = LoginRepository();
-  ValueNotifier<Auth> auth = ValueNotifier(Auth());
-
+  ValueNotifier<AuthRequest> auth = ValueNotifier(AuthRequest(
+    grantType: "password",
+    clientId: "user",
+  ));
   ValueNotifier<AuthService> authService = ValueNotifier(getIt<AuthService>());
+  ValueNotifier<bool> load = ValueNotifier(false);
 
   Future<Either<AppError, Auth>> login() async {
+    load.value = true;
+    notifyListeners();
     Either<AppError, Auth> result = await repository.login(auth.value);
+    result.fold((error) {}, (Auth auth) async {
+      await authService.value.saveTokens(auth.accessToken!, auth.refreshToken!);
+    });
+    load.value = false;
+    notifyListeners();
     return result;
   }
 

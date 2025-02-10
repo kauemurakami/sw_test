@@ -1,18 +1,18 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:sw_teste/enums/application_type.dart';
 import 'package:sw_teste/models/auth.dart';
+import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 
-// const baseUrl = 'https://dev-techtest.swfast.com.br';
 const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
-  Future<Either<AppError, Auth>> login(Auth auth) async {
+  Future<Either<AppError, Auth>> login(AuthRequest auth) async {
     //POST
     try {
+      print(ContentTypes.urlencoded.type);
       final response = await http.post(
         Uri.parse('$baseUrl/connect/token'),
         headers: {
@@ -20,6 +20,7 @@ class ApiService {
         },
         body: auth.toJson(),
       );
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(Auth.fromJson(json.decode(response.body)));
       } else {
@@ -30,6 +31,10 @@ class ApiService {
           error: 'Erro inesperado.',
           errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
     }
+  }
+
+  Future<Either<AppError, Auth>> refreshToken() async {
+    return Either.left(AppError(error: 's', errorDescription: ''));
   }
 
   fetchOrders() async {

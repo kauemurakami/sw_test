@@ -20,7 +20,7 @@ class DefaultButton extends StatelessWidget {
       child: MaterialButton(
         minWidth: width,
         height: height ?? 42.0,
-        color: Theme.of(context).buttonTheme.colorScheme?.surface,
+        color: Colors.deepPurple,
         onPressed: callback,
         child: Text(
           text,

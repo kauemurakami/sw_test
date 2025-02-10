@@ -49,6 +49,7 @@ class LoginPage extends StatelessWidget {
                           onValidate: (String value) => controller.validatePassword(value),
                         ),
                         DefaultButton(
+
                           callback: () async {
                             if (_formKey.currentState!.validate()) {
                               final Either<AppError, Auth> result = await controller.login();

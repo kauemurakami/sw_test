@@ -21,6 +21,7 @@ class Tff extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: TextStyle(color: Colors.white),
       obscureText: obscureText ?? false,
       initialValue: initialValue,
       onSaved: (v) => onSaved!(v!),

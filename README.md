@@ -5,6 +5,7 @@
 Enhanced Enums para definição e aplicação nos cabeçalhos das requisições http.
 Dart define para manter nossa url fora da aplicação até o momento do nosso build.
 Either para o tratamento de erros
+Flutter Secure Storage para armazenamento seguro do token
 
 # Run project
 Versão flutter: `3.27.3`

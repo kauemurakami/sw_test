@@ -1,4 +1,5 @@
 import 'package:sw_teste/models/auth.dart';
+import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/services/api.dart';
@@ -10,5 +11,5 @@ class LoginRepository {
     //GET
   }
 
-  Future<Either<AppError, Auth>> login(Auth auth) async => api.login(auth);
+  Future<Either<AppError, Auth>> login(AuthRequest auth) async => api.login(auth);
 }
