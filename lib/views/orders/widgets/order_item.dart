@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sw_teste/models/order.dart';
+import 'package:sw_teste/routes/delegate/delegate_imports.dart';
 import 'package:sw_teste/utils/functions/format_date.dart';
 import 'package:sw_teste/views/orders/widgets/bs_finish_order.dart';
 
@@ -13,12 +14,15 @@ class OrderItemWidget extends Container {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        print('finishorder');
+        if (order.finished) {
+          return;
+        }
         await showModalBottomSheet(
           isDismissible: true,
           enableDrag: true,
           context: context,
-          builder: (context) => BSFinishOrderWidget(order: order),
+          builder: (_) => ChangeNotifierProvider.value(
+              value: context.read<OrdersController>(), builder: (__, child) => BSFinishOrderWidget(order: order)),
         );
       },
       child: Container(
@@ -56,12 +60,14 @@ class OrderItemWidget extends Container {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Finalizar pedido',
-                  style: TextTheme.of(context)
-                      .bodyMedium!
-                      .copyWith(decoration: TextDecoration.underline, color: Colors.deepPurple),
-                ),
+                order.finished
+                    ? const SizedBox.shrink()
+                    : Text(
+                        'Finalizar pedido',
+                        style: TextTheme.of(context)
+                            .bodyMedium!
+                            .copyWith(decoration: TextDecoration.underline, color: Colors.deepPurple),
+                      ),
                 Text(
                   order.finished ? 'Finalizado' : 'Pendente',
                   style: TextTheme.of(context).labelSmall!.copyWith(

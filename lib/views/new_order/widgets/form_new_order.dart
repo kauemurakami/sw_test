@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/models/order.dart';
-import 'package:sw_teste/routes/delegate/delegate_imports.dart';
+import 'package:sw_teste/view_model/new_order_controller.dart';
 import 'package:sw_teste/widgets/default_button.dart';
 import 'package:sw_teste/widgets/tff.dart';
 
@@ -16,6 +16,7 @@ class FormNewOrderWidget extends StatelessWidget {
       key: _formKey,
       child: Consumer<NewOrderController>(
         builder: (context, NewOrderController controller, child) => Column(
+          spacing: 16.0,
           children: [
             Tff(
               label: 'Descrição',

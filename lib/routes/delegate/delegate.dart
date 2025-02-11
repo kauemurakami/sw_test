@@ -1,14 +1,12 @@
-
 import './delegate_imports.dart';
 
 class MyGoRouterDelegate {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-  final GoRouter router = GoRouter(
+  static final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
-    // initialLocation: AppRoutes.login.path,
-    initialLocation: AppRoutes.orders.path,
+    initialLocation: AppRoutes.login.path,
     routes: <RouteBase>[
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

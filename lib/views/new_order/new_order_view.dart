@@ -8,18 +8,23 @@ class NewOrderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'New Order',
-                style: TextTheme.of(context).titleLarge,
-              ),
-              FormNewOrderWidget(),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                BackButton(),
+                Text(
+                  'New Order',
+                  style: TextTheme.of(context).titleLarge,
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FormNewOrderWidget(),
+            ),
+          ],
         ),
       ),
     );

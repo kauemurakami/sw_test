@@ -74,8 +74,7 @@ class ApiService {
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
       );
-      print(response.body);
-      print(response.statusCode);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(orderFromJson(response.body));
       }
@@ -84,7 +83,6 @@ class ApiService {
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
-      print('catch');
       return Either.left(AppError(
           error: 'Erro inesperado.',
           errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
@@ -99,19 +97,16 @@ class ApiService {
   Future<Either<AppError, Order>> finishOrder(Order order) async {
     //PUT
     try {
-      final response = await http.put(
-        Uri.parse('$baseUrl/orders/${order.id}/finish'),
-        headers: {
-          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
-        },
-        body: order.toJson(),
-      );
+      final response = await http.put(Uri.parse('$baseUrl/orders/${order.id}/finish'),
+          headers: {
+            "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
+          },
+          body: order.toJson());
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(Order.fromJson(json.decode(response.body)));
       }
       if (response.statusCode == 401) {
-        print(response.statusCode);
-        print('token expirado');
+        return Either.left(AppError(error: "Invalid Token", errorDescription: 'Token inválido'));
       }
 
       return Either.left(AppError.fromJson(json.decode(response.body)));

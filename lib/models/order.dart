@@ -28,10 +28,10 @@ class Order {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "createdAt": createdAt.toIso8601String(),
+        // "id": id,
+        // "createdAt": createdAt.toIso8601String(),
         "description": description,
         "customerName": customerName,
-        "finished": finished,
+        // "finished": finished,
       };
 }

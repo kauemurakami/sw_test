@@ -7,6 +7,7 @@ class Tff extends StatelessWidget {
   final TextInputType? type;
   final String? label, initialValue;
   final bool? obscureText;
+  final Color? textColor;
   const Tff({
     super.key,
     this.type = TextInputType.text,
@@ -16,12 +17,13 @@ class Tff extends StatelessWidget {
     this.onSaved,
     this.label,
     this.obscureText,
+    this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: textColor ?? Colors.white),
       obscureText: obscureText ?? false,
       initialValue: initialValue,
       onSaved: (v) => onSaved!(v!),
@@ -31,7 +33,7 @@ class Tff extends StatelessWidget {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 12.0),
         label: Text(label ?? ''),
-        labelStyle: const TextStyle(color: Colors.white, fontSize: 17.0),
+        labelStyle: TextStyle(color: textColor ?? Colors.white, fontSize: 17.0),
       ),
     );
   }
