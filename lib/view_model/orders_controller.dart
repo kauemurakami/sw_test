@@ -36,4 +36,9 @@ class OrdersController with ChangeNotifier {
     notifyListeners();
     return result;
   }
+
+  // void addNewOrder(Order order) {
+  //   orders.value.add(order);
+  //   orders.notifyListeners();
+  // }
 }

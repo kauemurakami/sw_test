@@ -14,7 +14,7 @@ class OrderItemWidget extends Container {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (order.finished) {
+        if (order.finished!) {
           return;
         }
         await showModalBottomSheet(
@@ -43,24 +43,24 @@ class OrderItemWidget extends Container {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  order.customerName,
+                  '${order.customerName}',
                   style: TextTheme.of(context).titleMedium,
                 ),
                 Text(
-                  formatDate(order.createdAt),
+                  formatDate(order.createdAt!),
                   style: TextTheme.of(context).labelSmall,
                 ),
               ],
             ),
             Row(
               children: [
-                Flexible(child: Text(order.description)),
+                Flexible(child: Text('${order.description}')),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                order.finished
+                order.finished!
                     ? const SizedBox.shrink()
                     : Text(
                         'Finalizar pedido',
@@ -69,9 +69,9 @@ class OrderItemWidget extends Container {
                             .copyWith(decoration: TextDecoration.underline, color: Colors.deepPurple),
                       ),
                 Text(
-                  order.finished ? 'Finalizado' : 'Pendente',
+                  order.finished! ? 'Finalizado' : 'Pendente',
                   style: TextTheme.of(context).labelSmall!.copyWith(
-                        color: order.finished ? Colors.green : Colors.deepOrange,
+                        color: order.finished! ? Colors.green : Colors.deepOrange,
                       ),
                 ),
               ],
