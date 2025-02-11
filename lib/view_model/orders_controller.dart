@@ -10,9 +10,16 @@ class OrdersController with ChangeNotifier {
   ValueNotifier<bool> isFinished = ValueNotifier(true);
   ValueNotifier<bool> load = ValueNotifier(true);
 
-  OrdersController() {
-    print('init orders controller');
-    fetchOrders();
+  Future<Either<AppError, Order>> finishOrder(Order order) async {
+    final Either<AppError, Order> result = await repository.finishOrder(order);
+    result.fold((error) {
+      //TODO: qualquer outro tratamento aqui
+    }, (Order order) {
+      final int orderIndex = orders.value.indexWhere((Order o) => o.id == order.id);
+      orders.value[orderIndex] = order;
+      orders.notifyListeners();
+    });
+    return result;
   }
 
   Future<Either<AppError, List<Order>>> fetchOrders() async {

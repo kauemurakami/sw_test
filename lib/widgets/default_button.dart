@@ -8,11 +8,13 @@ class DefaultButton extends StatelessWidget {
     this.width,
     this.height,
     this.margin,
+    this.color,
   });
   final VoidCallback callback;
   final String text;
   final double? width, height;
   final EdgeInsets? margin;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +22,7 @@ class DefaultButton extends StatelessWidget {
       child: MaterialButton(
         minWidth: width,
         height: height ?? 42.0,
-        color: Colors.deepPurple,
+        color: color ?? Colors.deepPurple,
         onPressed: callback,
         child: Text(
           text,

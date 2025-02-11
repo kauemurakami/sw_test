@@ -11,6 +11,17 @@ class AuthService with ChangeNotifier {
   ValueNotifier<Auth> appAuth = ValueNotifier(Auth());
   ValueNotifier<User> user = ValueNotifier(User());
 
+  Future<void> init() async {
+    await getTokens();
+  }
+
+  Future<void> getTokens() async {
+    print('get tokens');
+    appAuth.value.accessToken = await storage.read(key: AppKeys.aToken);
+    appAuth.value.refreshToken = await storage.read(key: AppKeys.rToken);
+    notifyListeners();
+  }
+
   Future<void> saveTokens(Auth auth) async {
     appAuth.value = auth;
     await storage.write(key: AppKeys.aToken, value: auth.accessToken);

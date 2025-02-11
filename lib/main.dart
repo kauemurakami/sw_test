@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sw_teste/routes/delegate/delegate.dart';
+import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
 
-void main() {
+void main() async {
   setupLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await getIt<AuthService>().init();
   runApp(const MyApp());
 }
 

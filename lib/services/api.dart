@@ -13,6 +13,10 @@ import 'package:sw_teste/services/setup_locator.dart';
 const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
+  Future<Either<AppError, Auth>> refreshToken() async {
+    return Either.left(AppError(error: 's', errorDescription: ''));
+  }
+
   Future<Either<AppError, User>> fetchUser() async {
     try {
       final response = await http.get(
@@ -59,40 +63,60 @@ class ApiService {
     }
   }
 
-  Future<Either<AppError, Auth>> refreshToken() async {
-    return Either.left(AppError(error: 's', errorDescription: ''));
-  }
-
   Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = false}) async {
     //GET
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    print(Uri.parse('$baseUrl/orders?includeFinished=$isFinished'));
+    http.Response response;
     try {
-      final response = await http.get(
+      response = await http.get(
         Uri.parse('$baseUrl/orders?includeFinished=$isFinished'),
         headers: {
+          "Content-Type": ContentTypes.json.type,
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
       );
       print(response.body);
+      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(orderFromJson(response.body));
       }
-      if (response.statusCode == 403 || response.statusCode == 401) {
-        print('token expirado');
+      if (response.statusCode == 401) {
+        return Either.left(AppError(error: "Invalid Token", errorDescription: 'Token inválido'));
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
+      print('catch');
       return Either.left(AppError(
           error: 'Erro inesperado.',
           errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
     }
   }
 
-  addOrder() async {
+  Future<Either<AppError, Order>> newOrder(Order order) async {
     //POST
   }
-  finishOrder() async {
+  Future<Either<AppError, Order>> finishOrder(Order order) async {
     //PUT
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/orders/${order.id}/finish'),
+        headers: {
+          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
+        },
+        body: order.toJson(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Either.right(Order.fromJson(json.decode(response.body)));
+      }
+      if (response.statusCode == 401) {
+        print(response.statusCode);
+        print('token expirado');
+      }
+
+      return Either.left(AppError.fromJson(json.decode(response.body)));
+    } catch (e) {
+      return Either.left(AppError(
+          error: 'Erro inesperado.',
+          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
+    }
   }
 }

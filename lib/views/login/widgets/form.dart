@@ -5,7 +5,7 @@ import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/routes/routes.dart';
-import 'package:sw_teste/view_model/login.dart';
+import 'package:sw_teste/view_model/login_controller.dart';
 import 'package:sw_teste/widgets/default_button.dart';
 import 'package:sw_teste/widgets/tff.dart';
 
