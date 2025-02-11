@@ -96,14 +96,10 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl/orders'),
         headers: {
-          // "Content-Type": ContentTypes.json.type,
+          "Content-Type": ContentTypes.json.type,
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
-        body: {
-          "description": order.description,
-          "customerName": order.customerName,
-        },
-        // body: order.toJson(),
+        body: json.encode(order.toJson()),
       );
 
       print(response.body);
