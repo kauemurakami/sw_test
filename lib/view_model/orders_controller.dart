@@ -11,7 +11,6 @@ class OrdersController with ChangeNotifier {
   ValueNotifier<bool> load = ValueNotifier(true);
 
   Future<Either<AppError, Order>> finishOrder(Order order) async {
-    print('finishhhhh');
     final Either<AppError, Order> result = await repository.finishOrder(order);
     result.fold((error) {
       //TODO: qualquer outro tratamento aqui
@@ -24,7 +23,6 @@ class OrdersController with ChangeNotifier {
   }
 
   Future<Either<AppError, List<Order>>> fetchOrders() async {
-    print('fetchOrdersController');
     Either<AppError, List<Order>> result = await repository.fetchOrders(isFinished: isFinished.value);
     result.fold((error) {
       //TODO: qualquer outro tratamento aqui

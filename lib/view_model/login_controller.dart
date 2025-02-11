@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sw_teste/constants/strings.dart';
+import 'package:sw_teste/enums/grant_type.dart';
 import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
@@ -11,8 +13,8 @@ import 'package:sw_teste/services/setup_locator.dart';
 class LoginController with ChangeNotifier {
   final LoginRepository repository = LoginRepository();
   ValueNotifier<AuthRequest> auth = ValueNotifier(AuthRequest(
-    grantType: "password",
-    clientId: "user",
+    grantType: GrantType.password.type,
+    clientId: AppStrings.clientId,
   ));
   ValueNotifier<AuthService> authService = ValueNotifier(getIt<AuthService>());
   ValueNotifier<bool> load = ValueNotifier(false);

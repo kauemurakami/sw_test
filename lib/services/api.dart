@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:sw_teste/constants/strings.dart';
 import 'package:sw_teste/enums/application_type.dart';
+import 'package:sw_teste/enums/grant_type.dart';
 import 'package:sw_teste/models/auth.dart';
 import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
@@ -13,7 +15,36 @@ import 'package:sw_teste/services/setup_locator.dart';
 const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
+  cancelToken() async {}
   Future<Either<AppError, Auth>> refreshToken() async {
+    AuthService authService = getIt<AuthService>();
+    print(authService.appAuth.value.refreshToken);
+    final AuthRequest authRequest = AuthRequest(
+      grantType: GrantType.refreshToken.type,
+      clientId: AppStrings.clientId,
+      refreshToken: authService.appAuth.value.refreshToken,
+    );
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/connect/token',
+        ),
+        headers: {
+          "Content-Type": ContentTypes.urlencoded.type,
+        },
+        body: authRequest.toJsonRefresh(),
+      );
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        await authService.saveTokens(Auth.fromJson(json.decode(response.body)));
+        return Either.right(Auth.fromJson(json.decode(response.body)));
+      }
+      return Either.left(AppError.fromJson(json.decode(response.body)));
+    } catch (e) {
+      Either.left(AppError(
+          error: 'Erro inesperado.',
+          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
+    }
     return Either.left(AppError(error: 's', errorDescription: ''));
   }
 
@@ -28,12 +59,12 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(User.fromJson(json.decode(response.body)));
       }
-      //  else if (response.statusCode == 403 || response.statusCode == 401) {
-      //   print('token expirado');
-      // }
-      else {
-        return Either.left(AppError.fromJson(json.decode(response.body)));
+      if (response.statusCode == 401) {
+        await refreshToken();
+        return await fetchUser();
       }
+
+      return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
       return Either.left(AppError(
           error: 'Erro inesperado.',
@@ -42,7 +73,6 @@ class ApiService {
   }
 
   Future<Either<AppError, Auth>> login(AuthRequest auth) async {
-    //POST
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/connect/token'),
@@ -63,8 +93,7 @@ class ApiService {
     }
   }
 
-  Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = false}) async {
-    //GET
+  Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = true}) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/orders?includeFinished=$isFinished'),
@@ -78,7 +107,8 @@ class ApiService {
         return Either.right(orderFromJson(response.body));
       }
       if (response.statusCode == 401) {
-        return Either.left(AppError(error: "Invalid Token", errorDescription: 'Token inválido'));
+        await refreshToken();
+        return await fetchOrders();
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
@@ -89,9 +119,6 @@ class ApiService {
   }
 
   Future<Either<AppError, Order>> newOrder(Order order) async {
-    //POST
-    print(order.toJson());
-    print('new order');
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/orders'),
@@ -102,8 +129,6 @@ class ApiService {
         body: json.encode(order.toJson()),
       );
 
-      print(response.body);
-      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(
           Order.fromJson(
@@ -112,7 +137,8 @@ class ApiService {
         );
       }
       if (response.statusCode == 401) {
-        return Either.left(AppError(error: "Invalid Token", errorDescription: 'Token inválido'));
+        await refreshToken();
+        return await newOrder(order);
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
