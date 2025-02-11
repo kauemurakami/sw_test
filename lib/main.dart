@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sw_teste/routes/delegate/delegate.dart';
+import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
 
-void main() {
+void main() async {
   setupLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await getIt<AuthService>().init();
   runApp(const MyApp());
 }
 
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routerConfig: MyGoRouterDelegate().router,
+      routerConfig: MyGoRouterDelegate.router,
     );
   }
 }

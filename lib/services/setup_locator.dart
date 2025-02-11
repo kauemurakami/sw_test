@@ -5,6 +5,6 @@ import 'package:sw_teste/services/auth.dart';
 GetIt getIt = GetIt.instance;
 
 void setupLocator() {
-  getIt.registerLazySingleton<ApiService>(() => ApiService());
   getIt.registerLazySingleton<AuthService>(() => AuthService());
+  getIt.registerLazySingleton<ApiService>(() => ApiService());
 }

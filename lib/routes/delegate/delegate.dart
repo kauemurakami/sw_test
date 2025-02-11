@@ -1,14 +1,9 @@
-import 'package:sw_teste/view_model/orders.dart';
-import 'package:sw_teste/views/orders_view.dart';
-
 import './delegate_imports.dart';
 
 class MyGoRouterDelegate {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  GlobalKey<NavigatorState> get navigatorKey => _rootNavigatorKey;
-  GoRouter get router => _router;
 
-  final GoRouter _router = GoRouter(
+  static final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.login.path,
@@ -22,6 +17,7 @@ class MyGoRouterDelegate {
         },
       ),
       GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: AppRoutes.login.path,
         name: AppRoutes.login,
         pageBuilder: (_, state) {
@@ -35,6 +31,7 @@ class MyGoRouterDelegate {
         },
       ),
       GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: AppRoutes.orders.path,
         name: AppRoutes.orders,
         pageBuilder: (_, state) {
@@ -53,9 +50,9 @@ class MyGoRouterDelegate {
             pageBuilder: (_, state) {
               print(state.fullPath);
               return CustomFadeTransition(
-                child: ChangeNotifierProvider<OrdersController>(
-                  create: (_) => OrdersController(),
-                  child: OrdersPage(),
+                child: ChangeNotifierProvider<NewOrderController>(
+                  create: (_) => NewOrderController(),
+                  child: NewOrderPage(),
                 ),
               );
             },
