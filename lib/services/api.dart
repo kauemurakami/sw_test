@@ -93,7 +93,9 @@ class ApiService {
 
   Future<Either<AppError, Order>> newOrder(Order order) async {
     //POST
+    return Either.left(AppError(error: 'error', errorDescription: 'errorDescription'));
   }
+
   Future<Either<AppError, Order>> finishOrder(Order order) async {
     //PUT
     try {

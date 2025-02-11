@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/models/order.dart';
+import 'package:sw_teste/repository/new_order_repository.dart';
 
 class NewOrderController with ChangeNotifier {
   final NewOrderRepository repository = NewOrderRepository();
