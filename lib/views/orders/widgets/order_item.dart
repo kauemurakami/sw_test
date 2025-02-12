@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sw_teste/models/order.dart';
-import 'package:sw_teste/routes/delegate/delegate_imports.dart';
 import 'package:sw_teste/utils/functions/format_date.dart';
+import 'package:sw_teste/view_model/orders_controller.dart';
 import 'package:sw_teste/views/orders/widgets/bs_finish_order.dart';
 
 class OrderItemWidget extends Container {

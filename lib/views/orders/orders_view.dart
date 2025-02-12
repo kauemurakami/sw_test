@@ -6,6 +6,7 @@ import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/routes/routes.dart';
 import 'package:sw_teste/view_model/orders_controller.dart';
 import 'package:sw_teste/views/orders/widgets/order_item.dart';
+import 'package:sw_teste/views/orders/widgets/top_section.dart';
 import 'package:sw_teste/widgets/error_widget.dart';
 import 'package:sw_teste/widgets/loading.dart';
 
@@ -31,35 +32,7 @@ class OrdersPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Orders',
-                      style: TextTheme.of(context).titleLarge,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Finalizados',
-                          style: TextTheme.of(context).bodyLarge,
-                        ),
-                        ValueListenableBuilder<bool>(
-                          valueListenable: context.read<OrdersController>().isFinished,
-                          builder: (context, value, child) => Transform.scale(
-                            // scale: .5,
-                            scaleY: .5,
-                            scaleX: .6,
-                            child: Switch(
-                              value: value,
-                              onChanged: (bool b) async => await context.read<OrdersController>().filterOrders(b),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                OrdersTopSectionWidget(),
                 FutureBuilder(
                   future: context.read<OrdersController>().fetchOrders(),
                   builder: (context, snapshot) {

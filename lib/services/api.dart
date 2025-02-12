@@ -15,7 +15,31 @@ import 'package:sw_teste/services/setup_locator.dart';
 const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
-  cancelToken() async {}
+  Future<Either<AppError, bool>> cancelToken(AuthRequest authRequest) async {
+    print(authRequest.toJsonCancelToken());
+    try {
+      final response = await http.post(
+        Uri.parse(
+          '$baseUrl/connect/revocation',
+        ),
+        headers: {
+          "Content-Type": ContentTypes.urlencoded.type,
+        },
+        body: authRequest.toJsonCancelToken(),
+      );
+      print(response.body);
+      print(response.statusCode);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Either.right(true);
+      }
+      return Either.left(AppError.fromJson(json.decode(response.body)));
+    } catch (e) {
+      return Either.left(AppError(
+          error: 'Erro inesperado.',
+          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
+    }
+  }
+
   Future<Either<AppError, Auth>> refreshToken() async {
     AuthService authService = getIt<AuthService>();
     final AuthRequest authRequest = AuthRequest(
@@ -39,11 +63,10 @@ class ApiService {
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
-      Either.left(AppError(
+      return Either.left(AppError(
           error: 'Erro inesperado.',
           errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
     }
-    return Either.left(AppError(error: 's', errorDescription: ''));
   }
 
   Future<Either<AppError, User>> fetchUser() async {
@@ -140,7 +163,6 @@ class ApiService {
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
     } catch (e) {
-      print(e);
       return Either.left(AppError(
           error: 'Erro inesperado.',
           errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
