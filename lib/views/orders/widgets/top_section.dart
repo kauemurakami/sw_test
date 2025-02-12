@@ -21,7 +21,7 @@ class OrdersTopSectionWidget extends Container {
         Row(
           children: [
             Text(
-              'Finalizados',
+              'All',
               style: TextTheme.of(context).bodyLarge,
             ),
             ValueListenableBuilder<bool>(

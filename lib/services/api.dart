@@ -11,31 +11,29 @@ import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/models/user.dart';
 import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
+import 'package:sw_teste/utils/functions/handle_http_exceptions.dart';
 
 const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
   Future<Either<AppError, bool>> cancelToken(AuthRequest authRequest) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          '$baseUrl/connect/revocation',
-        ),
-        headers: {
-          "Content-Type": ContentTypes.urlencoded.type,
-        },
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.post(
+        Uri.parse('$baseUrl/connect/revocation'),
+        headers: {"Content-Type": ContentTypes.urlencoded.type},
         body: authRequest.toJsonCancelToken(),
-      );
+      ),
+    );
 
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(true);
       }
+
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, Auth>> refreshToken() async {
@@ -45,36 +43,37 @@ class ApiService {
       clientId: AppStrings.clientId,
       refreshToken: authService.appAuth.value.refreshToken,
     );
-    try {
-      final response = await http.post(
-        Uri.parse(
-          '$baseUrl/connect/token',
-        ),
-        headers: {
-          "Content-Type": ContentTypes.urlencoded.type,
-        },
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.post(
+        Uri.parse('$baseUrl/connect/token'),
+        headers: {"Content-Type": ContentTypes.urlencoded.type},
         body: authRequest.toJsonRefresh(),
-      );
+      ),
+    );
+
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         await authService.saveTokens(Auth.fromJson(json.decode(response.body)));
         return Either.right(Auth.fromJson(json.decode(response.body)));
       }
+
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, User>> fetchUser() async {
-    try {
-      final response = await http.get(
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.get(
         Uri.parse('$baseUrl/users/me'),
-        headers: {
-          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
-        },
-      );
+        headers: {"Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}"},
+      ),
+    );
+
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(User.fromJson(json.decode(response.body)));
       }
@@ -82,46 +81,44 @@ class ApiService {
         await refreshToken();
         return await fetchUser();
       }
-
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, Auth>> login(AuthRequest auth) async {
-    try {
-      final response = await http.post(
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.post(
         Uri.parse('$baseUrl/connect/token'),
-        headers: {
-          "Content-Type": ContentTypes.urlencoded.type,
-        },
+        headers: {"Content-Type": ContentTypes.urlencoded.type},
         body: auth.toJson(),
-      );
+      ),
+    );
+
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(Auth.fromJson(json.decode(response.body)));
-      } else {
-        return Either.left(AppError.fromJson(json.decode(response.body)));
       }
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+
+      return Either.left(AppError.fromJson(json.decode(response.body)));
+    });
   }
 
   Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = true}) async {
-    try {
-      final response = await http.get(
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.get(
         Uri.parse('$baseUrl/orders?includeFinished=$isFinished'),
         headers: {
           "Content-Type": ContentTypes.json.type,
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
-      );
+      ),
+    );
 
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(orderFromJson(response.body));
       }
@@ -130,50 +127,49 @@ class ApiService {
         return await fetchOrders();
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, Order>> newOrder(Order order) async {
-    try {
-      final response = await http.post(
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.post(
         Uri.parse('$baseUrl/orders'),
         headers: {
           "Content-Type": ContentTypes.json.type,
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
         body: json.encode(order.toJson()),
-      );
+      ),
+    );
 
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Either.right(
-          Order.fromJson(
-            json.decode(response.body),
-          ),
-        );
+        return Either.right(Order.fromJson(json.decode(response.body)));
       }
       if (response.statusCode == 401) {
         await refreshToken();
         return await newOrder(order);
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, Order>> finishOrder(Order order) async {
-    try {
-      final response = await http.put(Uri.parse('$baseUrl/orders/${order.id}/finish'),
-          headers: {
-            "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
-          },
-          body: order.toJson());
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.put(
+        Uri.parse('$baseUrl/orders/${order.id}/finish'),
+        headers: {
+          "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
+        },
+        body: order.toJson(),
+      ),
+    );
+
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(Order.fromJson(json.decode(response.body)));
       }
@@ -181,12 +177,7 @@ class ApiService {
         await refreshToken();
         return await finishOrder(order);
       }
-
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 }

@@ -64,13 +64,13 @@ class OrderItemWidget extends Container {
                 order.finished!
                     ? const SizedBox.shrink()
                     : Text(
-                        'Finalizar pedido',
+                        'Finish order',
                         style: TextTheme.of(context)
                             .bodyMedium!
                             .copyWith(decoration: TextDecoration.underline, color: Colors.deepPurple),
                       ),
                 Text(
-                  order.finished! ? 'Finalizado' : 'Pendente',
+                  order.finished! ? 'Finished' : 'Pending',
                   style: TextTheme.of(context).labelSmall!.copyWith(
                         color: order.finished! ? Colors.green : Colors.deepOrange,
                       ),
