@@ -64,7 +64,7 @@ class OrderItemWidget extends Container {
                 order.finished!
                     ? const SizedBox.shrink()
                     : Text(
-                        'Finalizar pedido',
+                        'Finish order',
                         style: TextTheme.of(context)
                             .bodyMedium!
                             .copyWith(decoration: TextDecoration.underline, color: Colors.deepPurple),
