@@ -10,6 +10,14 @@ class OrdersController with ChangeNotifier {
   ValueNotifier<bool> isFinished = ValueNotifier(true);
   ValueNotifier<bool> load = ValueNotifier(true);
 
+  Future<void> filterOrders(bool value) async {
+    if (value != isFinished.value) {
+      isFinished.value = value;
+      notifyListeners();
+      await fetchOrders();
+    }
+  }
+
   Future<Either<AppError, Order>> finishOrder(Order order) async {
     final Either<AppError, Order> result = await repository.finishOrder(order);
     result.fold((error) {
