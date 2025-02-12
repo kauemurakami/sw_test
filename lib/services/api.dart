@@ -18,7 +18,6 @@ class ApiService {
   cancelToken() async {}
   Future<Either<AppError, Auth>> refreshToken() async {
     AuthService authService = getIt<AuthService>();
-    print(authService.appAuth.value.refreshToken);
     final AuthRequest authRequest = AuthRequest(
       grantType: GrantType.refreshToken.type,
       clientId: AppStrings.clientId,
@@ -34,7 +33,6 @@ class ApiService {
         },
         body: authRequest.toJsonRefresh(),
       );
-      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         await authService.saveTokens(Auth.fromJson(json.decode(response.body)));
         return Either.right(Auth.fromJson(json.decode(response.body)));
@@ -161,7 +159,8 @@ class ApiService {
         return Either.right(Order.fromJson(json.decode(response.body)));
       }
       if (response.statusCode == 401) {
-        return Either.left(AppError(error: "Invalid Token", errorDescription: 'Token inválido'));
+        await refreshToken();
+        return await finishOrder(order);
       }
 
       return Either.left(AppError.fromJson(json.decode(response.body)));
