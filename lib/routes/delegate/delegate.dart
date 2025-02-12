@@ -12,7 +12,6 @@ class MyGoRouterDelegate {
         parentNavigatorKey: _rootNavigatorKey,
         path: '/',
         redirect: (_, state) {
-          print(state.fullPath);
           return AppRoutes.login.path;
         },
       ),
@@ -21,7 +20,6 @@ class MyGoRouterDelegate {
         path: AppRoutes.login.path,
         name: AppRoutes.login,
         pageBuilder: (_, state) {
-          print(state.fullPath);
           return CustomFadeTransition(
             child: ChangeNotifierProvider<LoginController>(
               create: (_) => LoginController(),
@@ -35,7 +33,6 @@ class MyGoRouterDelegate {
         path: AppRoutes.orders.path,
         name: AppRoutes.orders,
         pageBuilder: (_, state) {
-          print(state.fullPath);
           return CustomFadeTransition(
             child: ChangeNotifierProvider<OrdersController>(
               create: (_) => OrdersController(),
@@ -48,7 +45,6 @@ class MyGoRouterDelegate {
             path: AppRoutes.newOrder.path,
             name: AppRoutes.newOrder,
             pageBuilder: (_, state) {
-              print(state.fullPath);
               return CustomFadeTransition(
                 child: ChangeNotifierProvider<NewOrderController>(
                   create: (_) => NewOrderController(),
