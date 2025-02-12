@@ -13,6 +13,7 @@ Either para o tratamento de erros.
 Flutter Secure Storage para armazenamento seguro do token.
 
 # Observações
+
 Quando recebo o erro de token expirado, recebo o body em branco via dart, mas o status code vem ok, por isso, até o momento, token inválido está fixo no tratamento de erros da api
 
 # Run project

@@ -5,18 +5,18 @@ List<Order> orderFromJson(String str) => List<Order>.from(json.decode(str).map((
 String orderToJson(List<Order> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Order {
-  String id;
-  DateTime createdAt;
-  String description;
-  String customerName;
-  bool finished;
+  String? id;
+  DateTime? createdAt;
+  String? description;
+  String? customerName;
+  bool? finished;
 
   Order({
-    required this.id,
-    required this.createdAt,
-    required this.description,
-    required this.customerName,
-    required this.finished,
+    this.id,
+    this.createdAt,
+    this.description,
+    this.customerName,
+    this.finished,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(

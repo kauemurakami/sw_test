@@ -1,14 +1,12 @@
 class AuthRequest {
-  String? grantType;
-  String? clientId;
-  String? username;
-  String? password;
+  String? grantType, clientId, username, password, refreshToken;
 
   AuthRequest({
     this.grantType,
     this.clientId,
     this.username,
     this.password,
+    this.refreshToken,
   });
 
   factory AuthRequest.fromJson(Map<String, dynamic> json) => AuthRequest(
@@ -23,5 +21,10 @@ class AuthRequest {
         "client_id": clientId,
         "username": username,
         "password": password,
+      };
+  Map<String, dynamic> toJsonRefresh() => {
+        "grant_type": grantType,
+        "client_id": clientId,
+        "refresh_token": refreshToken,
       };
 }
