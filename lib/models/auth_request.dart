@@ -1,5 +1,5 @@
 class AuthRequest {
-  String? grantType, clientId, username, password, refreshToken;
+  String? grantType, clientId, username, password, refreshToken, token;
 
   AuthRequest({
     this.grantType,
@@ -7,6 +7,7 @@ class AuthRequest {
     this.username,
     this.password,
     this.refreshToken,
+    this.token,
   });
 
   factory AuthRequest.fromJson(Map<String, dynamic> json) => AuthRequest(
@@ -26,5 +27,11 @@ class AuthRequest {
         "grant_type": grantType,
         "client_id": clientId,
         "refresh_token": refreshToken,
+      };
+
+  Map<String, dynamic> toJsonCancelToken() => {
+        "token_type_hint": grantType,
+        "client_id": clientId,
+        "token": refreshToken,
       };
 }

@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:sw_teste/constants/colors.dart';
-import 'package:sw_teste/routes/delegate/delegate_imports.dart';
 import 'package:sw_teste/views/login/widgets/form.dart';
 
 class LoginPage extends StatelessWidget {

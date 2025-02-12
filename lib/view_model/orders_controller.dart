@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sw_teste/constants/strings.dart';
+import 'package:sw_teste/enums/grant_type.dart';
+import 'package:sw_teste/models/auth_request.dart';
 import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/repository/orders_repository.dart';
+import 'package:sw_teste/services/auth.dart';
+import 'package:sw_teste/services/setup_locator.dart';
 
 class OrdersController with ChangeNotifier {
   final OrdersRepository repository = OrdersRepository();
@@ -43,8 +48,19 @@ class OrdersController with ChangeNotifier {
     return result;
   }
 
-  // void addNewOrder(Order order) {
-  //   orders.value.add(order);
-  //   orders.notifyListeners();
-  // }
+  Future<Either<AppError, bool>> logout() async {
+    final AuthService authService = getIt<AuthService>();
+    final AuthRequest authRequest = AuthRequest(
+      grantType: GrantType.refreshToken.type,
+      clientId: AppStrings.clientId,
+      refreshToken: authService.appAuth.value.refreshToken,
+    );
+    Either<AppError, bool> result = await repository.logout(authRequest);
+    result.fold((AppError error) {
+      //TODO: qualquer outro tratamento aqui
+    }, (bool success) async {
+      await getIt<AuthService>().clearTokens();
+    });
+    return result;
+  }
 }

@@ -4,7 +4,6 @@ import 'package:sw_teste/models/either.dart';
 import 'package:sw_teste/models/error.dart';
 import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/view_model/new_order_controller.dart';
-import 'package:sw_teste/view_model/orders_controller.dart';
 import 'package:sw_teste/widgets/default_button.dart';
 import 'package:sw_teste/widgets/tff.dart';
 
@@ -44,7 +43,6 @@ class FormNewOrderWidget extends StatelessWidget {
                       ),
                     );
                   }, (Order order) {
-                    // context.read<OrdersController>().addNewOrder(order);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         backgroundColor: Colors.green,
