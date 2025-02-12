@@ -11,6 +11,7 @@ import 'package:sw_teste/models/order.dart';
 import 'package:sw_teste/models/user.dart';
 import 'package:sw_teste/services/auth.dart';
 import 'package:sw_teste/services/setup_locator.dart';
+import 'package:sw_teste/utils/functions/handle_http_exceptions.dart';
 
 const baseUrl = String.fromEnvironment('BASE_URL');
 
@@ -113,15 +114,19 @@ class ApiService {
   }
 
   Future<Either<AppError, List<Order>>> fetchOrders({bool isFinished = true}) async {
-    try {
-      final response = await http.get(
+    final Either<AppError, http.Response> response = await handleHttpExceptions(
+      () async => await http.get(
         Uri.parse('$baseUrl/orders?includeFinished=$isFinished'),
         headers: {
           "Content-Type": ContentTypes.json.type,
           "Authorization": "Bearer ${getIt<AuthService>().appAuth.value.accessToken}",
         },
-      );
+      ),
+    );
 
+    return response.fold((AppError error) {
+      return Either.left(error);
+    }, (http.Response response) async {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(orderFromJson(response.body));
       }
@@ -130,11 +135,7 @@ class ApiService {
         return await fetchOrders();
       }
       return Either.left(AppError.fromJson(json.decode(response.body)));
-    } catch (e) {
-      return Either.left(AppError(
-          error: 'Erro inesperado.',
-          errorDescription: 'Ocorreu um erro inesperado, tente novamente, ou entre em contato com o suporte'));
-    }
+    });
   }
 
   Future<Either<AppError, Order>> newOrder(Order order) async {

@@ -77,8 +77,14 @@ Quando vou fazer a chamada de cancelamento de token (`cancelToken()`), recebo um
 
 Em relação aos `repositories` fiquei em dúvida sobre o que esperavam ver, e como já possuo injeção de duas dependências, `AuthService` e `ApiService`, para não criar mais singletons via `get_it`, optei apenas por instanciar meus `repository` em meus `controllers`, apenas para variar a implementação, mas poderiam facilmente ser injetados via `get_it`, o que deixariam eles disponíveis por toda aplicação, como queria eles apenas localmente, dentro de meu respectivo `controller`,  tomei essa decisão, deixando claro minha opção, mas também ciente do método de implementação via injeção de dependências com `get_it`.
 
-Também simulei todas as exceções da `API` para `Erro inesperado` para deixar mais simples, e foquei no tratamento dos erros vindos da `API`.<br/>
-Portanto ao receber uma exceção, retorno nossa classe padrão `AppError` com a mensagem de `Erro inesperado` por padrão.
+<!-- Também simulei todas as exceções da `API` para `Erro inesperado` para deixar mais simples, e foquei no tratamento dos erros vindos da `API`.<br/>
+Portanto ao receber uma exceção, retorno nossa classe padrão `AppError` com a mensagem de `Erro inesperado` por padrão.<br/>
+Resolvi não tratar as exceções http como:
+ - SocketException
+ - HttpException
+ - TimeoutException
+ - FormatException<br/>
+ Fiz isso para facilitar a implementação, mas tenho total conhecimento que poderiam ser tratados via `try`, `on` e `catch`, com uma implementação padrão. -->
 
 # Run project
 `Flutter: 3.27.3`<br/>
