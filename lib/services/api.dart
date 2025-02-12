@@ -16,7 +16,6 @@ const baseUrl = String.fromEnvironment('BASE_URL');
 
 class ApiService {
   Future<Either<AppError, bool>> cancelToken(AuthRequest authRequest) async {
-    print(authRequest.toJsonCancelToken());
     try {
       final response = await http.post(
         Uri.parse(
@@ -27,8 +26,7 @@ class ApiService {
         },
         body: authRequest.toJsonCancelToken(),
       );
-      print(response.body);
-      print(response.statusCode);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Either.right(true);
       }
@@ -170,7 +168,6 @@ class ApiService {
   }
 
   Future<Either<AppError, Order>> finishOrder(Order order) async {
-    //PUT
     try {
       final response = await http.put(Uri.parse('$baseUrl/orders/${order.id}/finish'),
           headers: {
